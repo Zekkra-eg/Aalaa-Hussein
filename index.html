@@ -1,65 +1,243 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  <meta charset="UTF-8">
 
-html, body {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block;
-}
+  <title>Aalaa & Hussein</title>
 
-#music-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 999999;
-  background: transparent;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-</style>
+  <style>
+
+    /* =========================
+       RESET
+    ========================== */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      padding: 0;
+      background: #000;
+    }
+
+    body {
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    /* =========================
+       INVITATION
+    ========================== */
+
+    #invitation {
+      position: relative;
+      width: 100%;
+      height: auto;
+      background: #000;
+      overflow: hidden;
+    }
+
+    /* =========================
+       CANVA
+    ========================== */
+
+    #canvaFrame {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 100%;
+      height: 100%;
+
+      border: none;
+      display: block;
+
+      z-index: 1;
+    }
+
+    /* =========================
+       FIRST TOUCH LAYER
+    ========================== */
+
+    #touchLayer {
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 999998;
+
+      background: transparent;
+
+      touch-action: manipulation;
+
+      cursor: pointer;
+
+      -webkit-tap-highlight-color: transparent;
+    }
+
+  </style>
+
 </head>
 
 <body>
 
-<iframe
-  src="https://www.canva.com/design/DAHb8e8dIdk/sAv9-CO917dOxlb01_5SbQ/view?embed"
-  allow="autoplay; fullscreen"
-></iframe>
+  <!-- =========================
+       INVITATION
+  ========================== -->
 
-<div id="music-overlay"></div>
+  <main id="invitation">
 
-<audio id="music" src="/song.mp3" loop preload="auto"></audio>
+    <iframe
+      id="canvaFrame"
+      src="https://www.canva.com/design/DAHb8e8dIdk/sAv9-CO917dOxlb01_5SbQ/view?embed"
+      allowfullscreen
+      allow="fullscreen; autoplay"
+    ></iframe>
 
-<script>
-const overlay = document.getElementById("music-overlay");
-const music = document.getElementById("music");
+  </main>
 
-overlay.addEventListener("pointerdown", async () => {
-  try {
-    await music.play();
-    overlay.remove();
-  } catch (error) {
-    console.log("Music playback error:", error);
-  }
-}, { once: true });
-</script>
+
+  <!-- =========================
+       MUSIC
+  ========================== -->
+
+  <audio
+    id="song"
+    src="/song.mp3"
+    preload="auto"
+    loop
+  ></audio>
+
+
+  <!-- =========================
+       FIRST TOUCH
+  ========================== -->
+
+  <div id="touchLayer"></div>
+
+
+  <script>
+
+    /* =========================
+       ELEMENTS
+    ========================== */
+
+    const invitation =
+      document.getElementById("invitation");
+
+    const song =
+      document.getElementById("song");
+
+    const touchLayer =
+      document.getElementById("touchLayer");
+
+
+    /* =========================
+       DESIGN SIZE
+    ========================== */
+
+    const DESIGN_WIDTH = 1366;
+
+    const DESIGN_HEIGHT = 7549;
+
+
+    /* =========================
+       SET INVITATION SIZE
+    ========================== */
+
+    function setInvitationSize() {
+
+      const displayedWidth =
+        invitation.clientWidth;
+
+      const displayedHeight =
+        displayedWidth *
+        (DESIGN_HEIGHT / DESIGN_WIDTH);
+
+      invitation.style.height =
+        displayedHeight + "px";
+
+    }
+
+
+    /* =========================
+       INITIALIZE
+    ========================== */
+
+    setInvitationSize();
+
+
+    /* =========================
+       RESIZE
+    ========================== */
+
+    window.addEventListener(
+      "resize",
+      setInvitationSize
+    );
+
+
+    /* =========================
+       START MUSIC
+    ========================== */
+
+    let musicStarted = false;
+
+    async function startMusic() {
+
+      if (musicStarted) return;
+
+      song.volume = 1;
+      song.muted = false;
+
+      try {
+
+        await song.play();
+
+        musicStarted = true;
+
+        touchLayer.style.display = "none";
+
+        touchLayer.remove();
+
+      } catch (error) {
+
+        console.log(
+          "Audio blocked:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       FIRST INTERACTION
+    ========================== */
+
+    touchLayer.addEventListener(
+      "pointerdown",
+      startMusic,
+      { once: true }
+    );
+
+  </script>
 
 </body>
+
 </html>
