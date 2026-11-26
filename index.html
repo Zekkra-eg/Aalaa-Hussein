@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+#music-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+</style>
+</head>
+
+<body>
+
+<iframe
+  src="https://zekra.link/aalaa-hussein"
+  allow="autoplay; fullscreen"
+></iframe>
+
+<div id="music-overlay"></div>
+
+<audio id="music" src="/song.mp3" loop preload="auto"></audio>
+
+<script>
+const overlay = document.getElementById("music-overlay");
+const music = document.getElementById("music");
+
+overlay.addEventListener("pointerdown", async () => {
+  try {
+    await music.play();
+    overlay.remove();
+  } catch (error) {
+    console.log("Music playback error:", error);
+  }
+}, { once: true });
+</script>
+
+</body>
+</html>
